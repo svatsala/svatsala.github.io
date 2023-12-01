@@ -1,0 +1,726 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>NeRFs: Neural Radiance Fields 📸</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="a603dae1-8250-4d5f-8891-dca005da75c6" class="page sans"><header><img class="page-cover-image" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/nerf_img.png" style="object-position:center 50.86999999999999%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🧠</span></div><h1 class="page-title">NeRFs: Neural Radiance Fields 📸</h1><p class="page-description"></p></header><div class="page-body"><h2 id="e7cf0b71-fcc4-41ef-a92f-eecf85431caf" class=""><mark class="highlight-purple">Computer Vision &amp; Computational Photography</mark></h2><p id="f4f3b5ee-a2d9-46bc-9218-31641bace226" class="">Inspired by: <a href="https://arxiv.org/pdf/2003.08934.pdf">https://arxiv.org/pdf/2003.08934.pdf</a></p><h2 id="b468260d-ccdd-4991-bbd1-803204450d96" class=""><mark class="highlight-purple">By: Shrestha Vatsala</mark></h2><p id="6e34dfa0-d5fb-4241-af1b-3b6137c2f305" class="">The goal of this project was to implement NeRFs - initially to fit to a 2d image and then to a 3d render via multi-view images.</p><h1 id="ecad1e72-5c13-462b-8ce9-201a11c117eb" class=""><mark class="highlight-default">Part 1: </mark><strong>Fit a Neural Field to a 2D Image</strong></h1><p id="507a830c-8206-401e-95cf-db052ab91b28" class="">The architecture for the multilayer perceptron/neural network (MLP) for this part of the project is shown in figure 1. The positional encoding (PE) layer follows the equation in figure 2. Hyperparameters I chose for training this network: </p><ul id="642d3035-0e27-425f-ae84-7adf6aaa2765" class="bulleted-list"><li style="list-style-type:disc">learning rate = 1e-2 and 1e-4 but 1e-2 had a higher ending peak signal-to-noise ratio (PSNR)</li></ul><ul id="5d19e63a-8b50-4ad0-899f-b05c9ec17189" class="bulleted-list"><li style="list-style-type:disc">batch size = 10k</li></ul><ul id="f9c08e94-9f08-47ae-b555-67a04f033e74" class="bulleted-list"><li style="list-style-type:disc">Iterations = 1000 and 1250 but 1250 resulted in a marginally higher ending PSNR</li></ul><ul id="4d88e8a8-5157-4d87-9bbe-00197250ecc7" class="bulleted-list"><li style="list-style-type:disc">Max frequency L (for positional encoding) = 10</li></ul><ul id="084017b6-bc79-4ae9-9814-3b28addfd2db" class="bulleted-list"><li style="list-style-type:disc">4 linear layers and 3 ReLUs</li></ul><h2 id="45801338-2ff8-41f3-92bd-ba11227591c0" class=""><mark class="highlight-teal">MLP Architecture</mark></h2><figure id="ed9e8116-52e5-458d-8717-59ef6197678e" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Untitled.png"><img style="width:2332px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Untitled.png"/></a><figcaption>Fig 1. MLP</figcaption></figure><figure id="e407f129-011f-482e-b793-05bdc26c113b" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-15_at_10.43.59_AM.png"><img style="width:1256px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-15_at_10.43.59_AM.png"/></a><figcaption>Fig2. Positional Encoding equation</figcaption></figure><h2 id="89117dd7-b977-49c1-98d3-5572fc0f9cfc" class=""><mark class="highlight-blue">Visualization Over Iterations</mark></h2><p id="50dde01a-443e-444a-874f-71f6860e544d" class="">Below, I’ve visualized the training process by plotting the predicted images across iterations for a fox image and an image of me in Vancouver in the Fall (utilizing the same parameters as above). I’ve also plotted the PSNR curves for each of those training images respectively:</p><figure id="d8cd42af-c1e6-4eab-afcb-912c8c72906e" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox.jpeg"><img style="width:480px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox.jpeg"/></a><figcaption>Original Fox</figcaption></figure><div id="9f43a191-8074-488a-bc50-1d52f0b3c830" class="column-list"><div id="70439910-fa0d-433a-a746-7ac507defffe" style="width:25%" class="column"><figure id="9adeff7b-3568-46c5-a04b-09f99ffad953" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox0.jpg"><img style="width:1024px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox0.jpg"/></a><figcaption>Iter 0</figcaption></figure></div><div id="2ac61686-430d-49e5-90b9-313afe8f67d7" style="width:24.999999999999996%" class="column"><figure id="a347d6b3-134e-445a-b9c3-a1af91a1b358" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox375.jpg"><img style="width:1024px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox375.jpg"/></a><figcaption>Iter 375</figcaption></figure></div><div id="8293ec62-4d56-465a-ab1b-83fe275cf18d" style="width:25%" class="column"><figure id="e7ce34cd-de92-4d1a-87a8-5858ab3a038e" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox750.jpg"><img style="width:1024px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox750.jpg"/></a><figcaption>Iter 750</figcaption></figure></div><div id="8baa2b6a-1bf7-470e-912e-1a00730cfdb8" style="width:25%" class="column"><figure id="27c4e05c-878a-4811-a756-477f3828cd9b" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox1125.jpg"><img style="width:1024px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fox1125.jpg"/></a><figcaption>Iter 1250</figcaption></figure></div></div><figure id="7970938f-bfe9-41fc-a457-1073c787f531" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_foxtitle.jpg"><img style="width:640px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_foxtitle.jpg"/></a></figure><hr id="0183c028-ca29-4d0e-9a84-1707f9716fd9"/><figure id="11b7a982-6384-4b0c-802d-cbb6b33a3dcf" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall.jpg"><img style="width:432px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall.jpg"/></a><figcaption>Original Fall</figcaption></figure><div id="763dfa94-e818-4418-9285-d86da9597cf5" class="column-list"><div id="c9517fee-6e7d-4694-950a-b32adb7ba29e" style="width:25%" class="column"><figure id="f4234771-44a4-4daa-a24a-cc962cfde9a4" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall0.jpg"><img style="width:288px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall0.jpg"/></a><figcaption>Iter 0</figcaption></figure></div><div id="23cbe803-79ed-4b59-85f0-f83f684a5508" style="width:25%" class="column"><figure id="2f621e20-f488-478d-ba14-2bed12c2e089" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall375.jpg"><img style="width:728px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall375.jpg"/></a><figcaption>Iter 375</figcaption></figure></div><div id="c1bbaa9a-988e-42cf-92ab-7566ef75d221" style="width:25%" class="column"><figure id="a3c09959-2f79-4ae4-804a-ff83d02cfe4e" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall750.jpg"><img style="width:728px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall750.jpg"/></a><figcaption>Iter 750</figcaption></figure></div><div id="513cac9c-e036-40b3-be83-6f2712edcd2e" style="width:25%" class="column"><figure id="1e31bc27-6d12-4d41-ac09-0dbc1226a2b1" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall1125.jpg"><img style="width:728px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/fall1125.jpg"/></a><figcaption>Iter 1250</figcaption></figure></div></div><figure id="c8d94c64-de6d-4c82-9710-60cfe3ace5df" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_falltitle.jpg"><img style="width:640px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_falltitle.jpg"/></a></figure><hr id="106df678-5a1a-425c-935b-2d5beb51f6f5"/><h1 id="bce29f91-8f4d-405e-b007-7f7ad6153faa" class=""><mark class="highlight-default">Part 2: </mark><strong>Fit a Neural Radiance Field from Multi-view Images</strong></h1><h2 id="7b1d09d7-0949-4191-bda4-10e2f034c4ab" class=""><mark class="highlight-pink">Part 2.1: Create Rays from Cameras</mark></h2><p id="525810ba-9524-4e27-bdc9-0339935ef043" class="">Given some training images and a camera→world transformation matrix, we can do the following conversions of coordinates:</p><ul id="4eef7f31-1057-4115-a1c9-3746999c9c48" class="bulleted-list"><li style="list-style-type:disc">Camera → World<ul id="68d8fbde-e05f-4f4a-8eb5-74670571c04f" class="bulleted-list"><li style="list-style-type:circle">The transformation matrix is the one on the left</li></ul><figure id="cc25be60-2844-48a6-9703-fe43dbe3e659" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>R</mi><mrow><mn>3</mn><mi>x</mi><mn>3</mn></mrow></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>t</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mn>0</mn><mrow><mn>1</mn><mi>x</mi><mn>3</mn></mrow></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>∗</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo>=</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>w</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{bmatrix}
+R_{3x3} &amp; t \\
+0_{1x3} &amp; 1
+\end{bmatrix}^{-1}*
+\begin{bmatrix}
+x_{c} \\
+y_{c} \\
+z_{c} \\
+1
+\end{bmatrix} = 
+\begin{bmatrix}
+x_{w} \\
+y_{w} \\
+z_{w} \\
+1
+\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.604em;vertical-align:-0.95em;"></span><span class="minner"><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mathnormal mtight">x</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mathnormal mtight">x</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">t</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.654em;"><span style="top:-3.9029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:4.8em;vertical-align:-2.15em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='4.800em' viewBox='0 0 667 4800'><path d='M403 1759 V84 H666 V0 H319 V1759 v1200 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v1200 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='4.800em' viewBox='0 0 667 4800'><path d='M347 1759 V0 H0 V84 H263 V1759 v1200 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v1200 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:4.8em;vertical-align:-2.15em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='4.800em' viewBox='0 0 667 4800'><path d='M403 1759 V84 H666 V0 H319 V1759 v1200 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v1200 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.65em;"><span style="top:-4.65em;"><span class="pstrut" style="height:6.8em;"></span><span style="width:0.667em;height:4.800em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='4.800em' viewBox='0 0 667 4800'><path d='M347 1759 V0 H0 V84 H263 V1759 v1200 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v1200 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span></span></span></span></span></div></figure></li></ul><ul id="b28bbe5b-e6eb-46bb-a10f-acf00f39cd3d" class="bulleted-list"><li style="list-style-type:disc">Pixel → Camera<ul id="5b586389-77f0-4311-bd60-ffb4fb37c50e" class="bulleted-list"><li style="list-style-type:circle">Given a focal length (f) of the camera and a principal point (o) shown below as well as the pixel coordinates, we can utilize an intrinsic matrix K and use that to find camera coordinates</li></ul><figure id="c187293e-7837-42d2-8281-8ba841f835e4" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mi>o</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>L</mi><mi>e</mi><mi>n</mi><mi>g</mi><mi>t</mi><mi>h</mi><mo>=</mo><msub><mi>f</mi><mi>x</mi></msub><mo separator="true">,</mo><msub><mi>f</mi><mi>y</mi></msub><mspace linebreak="newline"></mspace><mi>p</mi><mi>r</mi><mi>i</mi><mi>n</mi><mi>c</mi><mi>i</mi><mi>p</mi><mi>a</mi><mi>l</mi><mi>P</mi><mi>o</mi><mi>i</mi><mi>n</mi><mi>t</mi><mo>=</mo><msub><mi>o</mi><mi>x</mi></msub><mo separator="true">,</mo><msub><mi>o</mi><mi>y</mi></msub><mo>=</mo><mi>i</mi><mi>m</mi><mi>g</mi><mi>W</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>i</mi><mi>m</mi><mi>g</mi><mi>H</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi><mi mathvariant="normal">/</mi><mn>2</mn><mspace linebreak="newline"></mspace><mi>s</mi><mo>=</mo><msub><mi>z</mi><mi>c</mi></msub><mo>=</mo><mn>1</mn><mspace linebreak="newline"></mspace><mi>K</mi><mo>=</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center center center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>f</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>o</mi><mi>x</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>f</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>o</mi><mi>y</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mspace linebreak="newline"></mspace><msup><mi>K</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>∗</mo><mo stretchy="false">(</mo><mi>s</mi><mo>∗</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>u</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>v</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo stretchy="false">)</mo><mo>=</mo><mrow><mo fence="true">[</mo><mtable rowspacing="0.16em" columnalign="center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>x</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>y</mi><mi>c</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>z</mi><mi>c</mi></msub></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">focalLength = f_{x}, f_{y} \\
+principalPoint = o_{x}, o_{y} = imgWidth/2, imgHeight/2 \\
+s=z_c=1\\
+K=\begin{bmatrix}
+f_{x}&amp;0&amp;o_{x}\\
+0&amp;f_{y}&amp;o_{y}\\
+0&amp;0&amp;1
+\end{bmatrix}\\
+K^{-1}*(s*\begin{bmatrix}
+u\\v\\1
+\end{bmatrix}) = 
+\begin{bmatrix}
+x_c\\y_c\\z_c
+\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">oc</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">L</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">in</span><span class="mord mathnormal">c</span><span class="mord mathnormal">i</span><span class="mord mathnormal">p</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.13889em;">lP</span><span class="mord mathnormal">o</span><span class="mord mathnormal">in</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">im</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">Wi</span><span class="mord mathnormal">d</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord">/2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">im</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">He</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">h</span><span class="mord mathnormal">t</span><span class="mord">/2</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.6em;vertical-align:-1.55em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M403 1759 V84 H666 V0 H319 V1759 v0 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M347 1759 V0 H0 V84 H263 V1759 v0 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8641em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:3.6em;vertical-align:-1.55em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M403 1759 V84 H666 V0 H319 V1759 v0 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">u</span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M347 1759 V0 H0 V84 H263 V1759 v0 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.6em;vertical-align:-1.55em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M403 1759 V84 H666 V0 H319 V1759 v0 v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.81em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.05em;"><span class="pstrut" style="height:5.6em;"></span><span style="width:0.667em;height:3.600em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.667em' height='3.600em' viewBox='0 0 667 3600'><path d='M347 1759 V0 H0 V84 H263 V1759 v0 v1759 H0 v84 H347z
+M347 1759 V0 H263 V1759 v0 v1759 h84z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55em;"><span></span></span></span></span></span></span></span></span></span></span></span></div></figure></li></ul><ul id="03491e2c-f3a9-4274-827f-fdb0e7dfd456" class="bulleted-list"><li style="list-style-type:disc">Pixel → Ray (put it all together)<ul id="d2bbb1c5-0bf5-4d6c-98ba-36fcd5cfbae8" class="bulleted-list"><li style="list-style-type:circle">Rays are composed of an origin, r0, and a direction, rd</li></ul><ul id="7f900e14-3ce4-4c5b-8783-72743614de22" class="bulleted-list"><li style="list-style-type:circle">r0: use transformation matrix</li></ul><figure id="92d1db99-676b-4d0d-8d89-bbbdfe36c0ab" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>r</mi><mn>0</mn></msub><mo>=</mo><mo>−</mo><msubsup><mi>R</mi><mrow><mn>3</mn><mi>x</mi><mn>3</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>∗</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">r_0 = -R_{3x3}^{-1}*t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1205em;vertical-align:-0.2564em;"></span><span class="mord">−</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-2.4436em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mathnormal mtight">x</span><span class="mord mtight">3</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2564em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span></span></div></figure><ul id="2430ac87-97dc-4829-ab2e-57d5e3c41beb" class="bulleted-list"><li style="list-style-type:circle">r0 pixel coordinates → camera coordinates → world coordinates utilizing above functions</li></ul><ul id="ce5ad1c2-7458-4932-9df7-d6435047fbc0" class="bulleted-list"><li style="list-style-type:circle">rd: use world coordinates and origin</li></ul><figure id="ce6ca842-f077-4ca5-809a-29352dec4861" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>r</mi><mi>d</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>X</mi><mi>w</mi></msub><mo>−</mo><msub><mi>r</mi><mn>0</mn></msub></mrow><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mrow><msub><mi>X</mi><mi>w</mi></msub><mo>−</mo><msub><mi>r</mi><mn>0</mn></msub></mrow><mi mathvariant="normal">∣</mi><msub><mi mathvariant="normal">∣</mi><mn>2</mn></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">r_d = \frac{X_w-r_0}{||{X_w-r_0}||_2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2963em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣∣</span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div></figure></li></ul><h2 id="b53768f9-a11c-4a6b-a0c3-dbf899b49cc0" class=""><mark class="highlight-orange">Part 2.2: Sampling</mark></h2><p id="45679a75-407c-44f2-a1fb-a9be0dbabe3f" class="">The step is two-fold: sample rays from the image then sample points from each of those rays to discretize. I decided to sample N rays at every training iteration by first sampling M images, and then sampling N // M rays from every image. For sampling points, I uniformly collected 32 points via t = np.linspace(near=2, far=6, n_samples) (and repeated this N times to create a matrix) and then added some small perturbation, only during training, to evade overfitting and ensure that every location along the ray would be touched upon (t = t + (np.random.rand(*t.shape) * t_width). Afterwards, I computed res = r0+(rd*t) to get an array of discretized points! The rays are shown below on the left coming from different camera angles, and, if you zoom in, you can see the perturbed points during training on the right.</p><div id="f60b7fb3-c107-4231-a3c3-a4dc7d53d020" class="column-list"><div id="13586599-789f-4183-9a76-ae29e5a23cb5" style="width:50%" class="column"><figure id="5fb78649-0e2f-4357-9d7d-410f2903265f" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-14_at_10.15.00_PM.png"><img style="width:1670px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-14_at_10.15.00_PM.png"/></a></figure></div><div id="4773ec62-c276-4205-a3a5-b9f1a5eda8c4" style="width:50%" class="column"><figure id="fed67be9-58fe-40d7-b757-c9a49b693787" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-14_at_10.15.17_PM.png"><img style="width:1762px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-14_at_10.15.17_PM.png"/></a></figure></div></div><h2 id="631e1266-d97a-497b-b223-c901317439ef" class=""><mark class="highlight-yellow">Part 2.3: Putting the Dataloading All Together</mark></h2><p id="1d33b6df-1144-432a-a72d-8099db616e8e" class="">My dataloader took in the training images, training camera→world matrices, a focal length, a batch size M, and the number of samples per ray N desired. I used that information to sample M rays (which returned r0, rd, and colors), sample N rays for each of those M rays (which resulted in output points), and returned all of the resulting information from the dataloader.</p><h2 id="83ebda70-ae68-4573-bf37-b06c51cc6851" class=""><mark class="highlight-teal">Part 2.4: Neural Radiance Field/MLP Architecture</mark></h2><p id="0f5835b4-2726-4fc1-a92d-40ec20fccd5a" class="">The architecture is given below. I tried to add some bias as it sped up the training but the resulting PSNR looked roughly the same as without bias. I ideated about removing the linear layer that was right before concatenating PE(rd) since it seemed redundant but it didn’t cause much of a change in resulting PSNR or speed of training.</p><figure id="b44371f6-f2d0-443b-9da0-0ace2897d166" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Untitled%201.png"><img style="width:4180px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Untitled%201.png"/></a></figure><h2 id="ec27de7c-2380-4e6d-8f72-b474a400c3a6" class=""><mark class="highlight-purple">Part 2.5: Volume Rendering</mark></h2><p id="d18aae7e-b182-4eb8-896c-3de36f2de3d1" class="">Utilizing the output density and rgbs in following volume rendering equation, I got C_hat which is the predicted color. I calculated the loss between the pixel colors outputted by the dataloader and C_hat and used that difference to further train the model by backpropogating the loss of the 2 outputs via this equation.</p><figure id="f85c715a-88cb-49f4-82f1-d3470565c184" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-15_at_10.51.44_AM.png"><img style="width:934px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/Screenshot_2023-11-15_at_10.51.44_AM.png"/></a></figure><h2 id="a0cc6058-c7b3-49b6-9565-a1fbeb6cf682" class=""><mark class="highlight-blue">Visualizations Over Iterations &amp; 3D Renders</mark></h2><h3 id="b2ad4cde-f844-48f8-9f55-5189ff1b223f" class="">PSNR on validation set (64 samples/ray):</h3><figure id="cc2411d4-57e1-4ae7-8dfb-c5edde5182bf" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_legovalidation.jpg"><img style="width:640px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_legovalidation.jpg"/></a></figure><h3 id="ef294712-a58a-43e3-9097-5f9f7a5c5775" class="">Outputs on Validation Set:</h3><figure id="96ee568e-3931-4167-bc48-e8daccdf73e3" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego0.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego0.jpg"/></a></figure><figure id="56b344ff-409f-4679-bb21-d4ee3fedb36d" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego400.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego400.jpg"/></a></figure><figure id="2f655d05-fbee-49e5-9015-e7b62e696cec" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego800.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego800.jpg"/></a></figure><figure id="d9741433-ddfe-4e7b-8abb-acfb8b69aeb9" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1200.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1200.jpg"/></a></figure><figure id="74262530-5c85-4ce6-a6f9-93dcece18b9f" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1600.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1600.jpg"/></a></figure><figure id="a0c4dbe4-d8e6-4f99-a13f-81bba2a48b35" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1999.jpg"><img style="width:384px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/lego1999.jpg"/></a></figure><h3 id="462a59b7-c25e-42f9-baf4-171fab431ee2" class="">Trained outputs on test set:</h3><div id="4efa3da6-8554-48a3-bdd9-3f0cee048aa8" class="column-list"><div id="ffc21518-2edb-4c72-9272-1d49185407ef" style="width:33.333333333333336%" class="column"><figure id="622450b6-4feb-43b9-b62c-c43cdce6c76c" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/32-1000.gif"><img style="width:480px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/32-1000.gif"/></a></figure><p id="380d0249-a759-4e21-a344-3c3068c997cd" class="">samples/ray: 32
+iterations: 1000
+epochs: 1
+L1: 10
+L2: 4</p><figure id="f5d9f966-7cbc-492f-827c-0bce9ab91738" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_lego_(5).jpg"><img style="width:640px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_lego_(5).jpg"/></a><figcaption>PSNR on training set: 32 samples per ray, 1000 iterations</figcaption></figure></div><div id="19fbf4eb-f9e8-4d4d-943b-20f034736e4c" style="width:33.333333333333336%" class="column"><figure id="6c7594d7-259b-48bf-a790-5e4ff771650e" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/64-2000.gif"><img style="width:480px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/64-2000.gif"/></a></figure><p id="424943b4-70b9-4d51-b700-d3310efedc90" class="">samples/ray: 64
+iterations: 2000
+epochs: 1
+L1: 10
+L2: 4</p><figure id="9041ded3-ae47-4bf5-a985-f5b640648445" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_lego_(6).jpg"><img style="width:640px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/psnr_lego_(6).jpg"/></a><figcaption>PSNR on training set: 64 samples per ray, 2000 iterations</figcaption></figure></div><div id="6caae213-39e7-40ab-8fde-217438b557f9" style="width:33.33333333333333%" class="column"><figure id="5d58ab5c-dafc-41e8-870b-300efc4d6a3d" class="image"><a href="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/64-15-10-2000-3.gif"><img style="width:288px" src="NeRFs%20Neural%20Radiance%20Fields%20%F0%9F%93%B8%20a603dae182504d5f8891dca005da75c6/64-15-10-2000-3.gif"/></a></figure><p id="77f237cd-2786-4de2-9292-1cd50d78fb9b" class="">samples/ray: 64
+iterations: 2000
+epochs: 3
+L1: 15
+L2: 8</p></div></div><h1 id="659d92fc-bfd0-4afc-a557-9747b5744244" class=""><mark class="highlight-purple">Thats all for now, and thanks for checking out my NeRFs!!!</mark></h1></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
